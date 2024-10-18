@@ -1,12 +1,17 @@
 import React from "react";
 import SidebarLink from "./SidebarLink";
 
-const SidebarNav = ({ isAuthenticated, userRole }) => {
+const SidebarNav = ({ isAuthenticated, userRole, toggleSidebar }) => {
 	return (
 		<aside className="menu">
 			<i className={`fas fa-image`}></i>
 			<i className={`fas fa-terminal`} style={{ marginLeft: "10px" }}></i>
 			<p className="menu-label">CanvaScript</p>
+			<button className="button is-white is-small" onClick={toggleSidebar}>
+				<span className="icon">
+					<i className="fas fa-bars"></i>
+				</span>
+			</button>
 			<ul className="menu-list">
 				{isAuthenticated ? (
 					<>
