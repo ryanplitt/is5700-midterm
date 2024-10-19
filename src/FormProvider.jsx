@@ -40,3 +40,11 @@ export const useInput = (name) => {
 		onChange: (e) => updateForm(name, e.target.value),
 	};
 };
+
+export const useNumberInput = (name) => {
+	const { form, updateForm } = useForm();
+	return {
+		value: form[name] || "",
+		onChange: (e) => updateForm(name, parseFloat(e.target.value)),
+	};
+};

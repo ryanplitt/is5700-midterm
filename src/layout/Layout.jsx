@@ -1,50 +1,138 @@
 import React, { useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import {
-	Drawer,
-	IconButton,
-	AppBar,
-	Toolbar,
-	Typography,
-	Box,
-	CssBaseline,
-	Divider,
-	List,
-	ListItem,
-	ListItemButton,
-	ListItemIcon,
-	ListItemText,
-} from "@mui/material";
+import { Link, Outlet, useLocation } from "react-router-dom";
+import { styled } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Drawer from "@mui/material/Drawer";
+import CssBaseline from "@mui/material/CssBaseline";
+import MuiAppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import SidebarNav from "../SidebarNav";
+import { Divider, Tooltip } from "@mui/material";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { useTheme } from "@mui/material/styles";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useAuth } from "../useAuth0";
 
 const drawerWidth = 240;
 
+// Styled components for AppBar and Main
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
+	({ theme, open }) => ({
+		flexGrow: 1,
+		padding: theme.spacing(3),
+		transition: theme.transitions.create("margin", {
+			easing: theme.transitions.easing.sharp,
+			duration: theme.transitions.duration.leavingScreen,
+		}),
+		marginLeft: `-${drawerWidth}px`,
+		...(open && {
+			marginLeft: 0,
+			transition: theme.transitions.create("margin", {
+				easing: theme.transitions.easing.easeOut,
+				duration: theme.transitions.duration.enteringScreen,
+			}),
+		}),
+	})
+);
+
+const AppBar = styled(MuiAppBar, {
+	shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+	transition: theme.transitions.create(["margin", "width"], {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.leavingScreen,
+	}),
+	...(open && {
+		width: `calc(100% - ${drawerWidth}px)`,
+		marginLeft: `${drawerWidth}px`,
+		transition: theme.transitions.create(["margin", "width"], {
+			easing: theme.transitions.easing.easeOut,
+			duration: theme.transitions.duration.enteringScreen,
+		}),
+	}),
+}));
+
+const DrawerHeader = styled("div")(({ theme }) => ({
+	display: "flex",
+	alignItems: "center",
+	padding: theme.spacing(0, 1),
+	...theme.mixins.toolbar,
+	justifyContent: "flex-end",
+}));
+
 const Layout = ({ isAuthenticated, userRole }) => {
-	const [sidebarOpen, setSidebarOpen] = useState(true);
+	const [open, setOpen] = useState(true);
+	const theme = useTheme();
 	const location = useLocation();
+	const auth = useAuth();
 
 	const toggleSidebar = () => {
-		setSidebarOpen(!sidebarOpen);
+		setOpen(!open);
 	};
 
-	const getPageTitle = () => {
-		return location.title || "Home";
+	const handleSignOut = () => {
+		auth.logout();
 	};
+
+	const routeTitles = {
+		"/home": "Home",
+		"/syllabus": "Syllabus",
+		"/announcements": "Announcements",
+		"/zoom": "Zoom",
+		"/modules": "Modules",
+		"/assignments": "Assignments",
+		"/discussions": "Discussions",
+		"/people": "People",
+		"/grades": "Grades",
+		"/search": "Search",
+		"/genericPage": "Generic Page",
+		"/profile": "Profile",
+	};
+
+	const title = routeTitles[location.pathname] || "Home";
 
 	return (
 		<Box sx={{ display: "flex" }}>
 			<CssBaseline />
-			<AppBar
-				position="fixed"
-				sx={{ width: `calc(100% - ${drawerWidth}px)`, ml: `${drawerWidth}px` }}
-			>
+			<AppBar position="fixed" open={open}>
 				<Toolbar>
+					<IconButton
+						color="inherit"
+						aria-label="open drawer"
+						onClick={toggleSidebar}
+						edge="start"
+						sx={{ mr: 2, ...(open && { display: "none" }) }}
+					>
+						<MenuIcon />
+					</IconButton>
+
 					<Typography variant="h6" noWrap component="div">
-						Permanent drawer
+						{title}
 					</Typography>
+
+					<Box sx={{ marginLeft: "auto", display: "flex", alignItems: "center" }}>
+						<Tooltip title="Profile" arrow>
+							<IconButton color="inherit" component={Link} to="/profile">
+								<AccountCircleIcon />
+							</IconButton>
+						</Tooltip>
+
+						{isAuthenticated && (
+							<Tooltip title="Sign Out" arrow>
+								<IconButton color="inherit" onClick={handleSignOut}>
+									<LogoutIcon />
+								</IconButton>
+							</Tooltip>
+						)}
+					</Box>
 				</Toolbar>
 			</AppBar>
+
 			<Drawer
 				sx={{
 					width: drawerWidth,
@@ -54,63 +142,25 @@ const Layout = ({ isAuthenticated, userRole }) => {
 						boxSizing: "border-box",
 					},
 				}}
-				variant="permanent"
+				variant="persistent"
 				anchor="left"
+				open={open}
 			>
+				<DrawerHeader>
+					<IconButton onClick={toggleSidebar}>
+						{theme.direction === "ltr" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+					</IconButton>
+				</DrawerHeader>
+				<Divider />
 				<SidebarNav isAuthenticated={isAuthenticated} userRole={userRole} />
 			</Drawer>
-			<Box component="main" sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
-				<Toolbar />
+
+			<Main open={open}>
+				<DrawerHeader />
 				<Outlet />
-			</Box>
+			</Main>
 		</Box>
 	);
-
-	<Box sx={{ display: "flex" }}>
-		{/* <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}> */}
-		<AppBar position="fixed">
-			<Toolbar>
-				<IconButton
-					edge="start"
-					color="inherit"
-					aria-label="menu"
-					onClick={toggleSidebar}
-					sx={{ mr: 2 }}
-				>
-					<MenuIcon />
-				</IconButton>
-				<Typography variant="h6" noWrap component="div">
-					{getPageTitle()}
-				</Typography>
-			</Toolbar>
-		</AppBar>
-
-		<Drawer
-			variant="persistent"
-			anchor="left"
-			open={sidebarOpen}
-			sx={{
-				width: drawerWidth,
-				flexShrink: 0,
-				[`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
-			}}
-		>
-			<SidebarNav isAuthenticated={isAuthenticated} userRole={userRole} />
-		</Drawer>
-
-		<Box
-			component="main"
-			sx={{
-				flexGrow: 1,
-				p: 3,
-				ml: `${sidebarOpen ? `${drawerWidth}px` : "0"}`,
-				transition: "margin 0.3s",
-			}}
-		>
-			<Toolbar /> {/* To give padding under the AppBar */}
-			<Outlet />
-		</Box>
-	</Box>;
 };
 
 export default Layout;

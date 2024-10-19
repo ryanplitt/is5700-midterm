@@ -1,21 +1,21 @@
 import React from "react";
-import { useInput } from "./FormProvider";
+import { useNumberInput } from "./FormProvider";
 import TextField from "@mui/material/TextField";
 import { Box } from "@mui/material";
 
-const TextInput = ({ name, type = "text", ...props }) => {
+const NumberInput = ({ name, ...props }) => {
 	return (
 		<Box mb={2}>
 			<TextField
 				label={name}
-				type={type}
+				type="number"
 				fullWidth
 				variant="outlined"
-				{...useInput(name)}
+				{...useNumberInput(name)}
 				{...props}
 			/>
 		</Box>
 	);
 };
 
-export default TextInput;
+export default NumberInput;

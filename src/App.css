@@ -40,38 +40,3 @@
 .read-the-docs {
   color: #888;
 }
-
-
-.layout {
-  display: flex;
-  height: 100vh;
-}
-
-.sidebar {
-  width: 240px;
-  background-color: #ffffff;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  padding-top: 20px;
-}
-
-.main-content {
-  margin-left: 240px;
-  padding: 20px;
-  width: 100%;
-  overflow: auto;
-}
-
-.menu-list li a {
-  display: flex;
-  align-items: center; 
-  justify-content: flex-start;
-}
-
-.menu-list li a i {
-  width: 24px;
-  text-align: center;
-  margin-right: 10px;
-}

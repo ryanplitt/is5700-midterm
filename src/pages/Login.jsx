@@ -26,7 +26,6 @@ const Login = () => {
 					label="Email"
 					type="email"
 					fullWidth
-					margin="normal"
 					variant="outlined"
 					value={email}
 					onChange={(e) => setEmail(e.target.value)}
@@ -37,7 +36,6 @@ const Login = () => {
 					label="Password"
 					type="password"
 					fullWidth
-					margin="normal"
 					variant="outlined"
 					value={password}
 					onChange={(e) => setPassword(e.target.value)}

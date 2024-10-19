@@ -6,7 +6,7 @@ const SidebarNav = ({ isAuthenticated, userRole, toggleSidebar }) => {
 		<aside className="menu">
 			<i className={`fas fa-image`}></i>
 			<i className={`fas fa-terminal`} style={{ marginLeft: "10px" }}></i>
-			{/* <p className="menu-label">CanvaScript</p> */}
+			<p className="menu-label">CanvaScript</p>
 			<button className="button" onClick={toggleSidebar}>
 				<span className="icon">
 					<i className="fas fa-bars"></i>
@@ -25,6 +25,7 @@ const SidebarNav = ({ isAuthenticated, userRole, toggleSidebar }) => {
 						<SidebarLink to="/grades" icon="fa-graduation-cap" label="Grades" />
 						<SidebarLink to="/people" icon="fa-users" label="People" />
 						<SidebarLink to="/search" icon="fa-search" label="Search" />
+						<SidebarLink to="/genericPage" icon="fa-cogs" label="Generic Page" />
 					</>
 				) : (
 					<SidebarLink to="/" icon="fa-home" label="Home" />

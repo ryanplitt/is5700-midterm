@@ -15,6 +15,8 @@ import {
 	Search,
 } from "./pages/BlankPages";
 import React from "react";
+import GenericPage from "./pages/GenericPage";
+import Profile from "./pages/Profile";
 
 const Router = ({ isAuthenticated, userRole }) => {
 	return (
@@ -28,17 +30,21 @@ const Router = ({ isAuthenticated, userRole }) => {
 				</Route>
 
 				{isAuthenticated && (
-					<Route element={<Layout isAuthenticated={isAuthenticated} userRole={userRole} />}>
+					<Route
+						element={<Layout isAuthenticated={isAuthenticated} userRole={userRole} title="Home" />}
+					>
 						<Route path="/home" element={<Home />} />
-						<Route path="/syllabus" element={<Syllabus />} />
-						<Route path="/announcements" element={<Announcements />} />
-						<Route path="/zoom" element={<Zoom />} />
-						<Route path="/modules" element={<Modules />} />
-						<Route path="/assignments" element={<Assignments />} />
-						<Route path="/discussions" element={<Discussions />} />
-						<Route path="/people" element={<People />} />
-						<Route path="/grades" element={<Grades />} />
-						<Route path="/search" element={<Search />} />
+						<Route path="/syllabus" element={<Syllabus />} title="Syllabus" />
+						<Route path="/announcements" element={<Announcements />} title="Announcements" />
+						<Route path="/zoom" element={<Zoom />} title="Zoom" />
+						<Route path="/modules" element={<Modules />} title="Modules" />
+						<Route path="/assignments" element={<Assignments />} title="Assignments" />
+						<Route path="/discussions" element={<Discussions />} title="Discussions" />
+						<Route path="/people" element={<People />} title="People" />
+						<Route path="/grades" element={<Grades />} title="Grades" />
+						<Route path="/search" element={<Search />} title="Search" />
+						<Route path="/genericPage" element={<GenericPage />} title="Generic Page" />
+						<Route path="/profile" element={<Profile />} title="Profile" />
 					</Route>
 				)}
 			</Routes>
