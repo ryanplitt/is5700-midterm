@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Container, Box, TextField, Button, Typography, Link } from "@mui/material";
 
 const Login = () => {
 	const [email, setEmail] = useState("");
@@ -16,51 +17,44 @@ const Login = () => {
 	};
 
 	return (
-		<section className="section">
-			<div className="container">
-				<h1 className="title">Login</h1>
-				<div className="box">
-					<form onSubmit={handleSubmit}>
-						<div className="field">
-							<label className="label">Email</label>
-							<div className="control">
-								<input
-									className="input"
-									type="email"
-									placeholder="e.g. alex@example.com"
-									value={email}
-									onChange={(e) => setEmail(e.target.value)}
-									required
-								/>
-							</div>
-						</div>
+		<Container maxWidth="sm">
+			<Typography variant="h4" component="h1" gutterBottom>
+				Login
+			</Typography>
+			<Box component="form" onSubmit={handleSubmit} noValidate>
+				<TextField
+					label="Email"
+					type="email"
+					fullWidth
+					margin="normal"
+					variant="outlined"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					required
+				/>
 
-						<div className="field">
-							<label className="label">Password</label>
-							<div className="control">
-								<input
-									className="input"
-									type="password"
-									placeholder="********"
-									value={password}
-									onChange={(e) => setPassword(e.target.value)}
-									required
-								/>
-							</div>
-						</div>
+				<TextField
+					label="Password"
+					type="password"
+					fullWidth
+					margin="normal"
+					variant="outlined"
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					required
+				/>
 
-						<div className="field">
-							<div className="control">
-								<button className="button is-primary">Login</button>
-							</div>
-						</div>
-					</form>
-				</div>
-				<p>
-					Don't have an account? <a href="/register">Register here</a>.
-				</p>
-			</div>
-		</section>
+				<Button type="submit" variant="contained" color="primary" fullWidth>
+					Login
+				</Button>
+			</Box>
+			<Typography variant="body2" align="center" style={{ marginTop: "1rem" }}>
+				Don't have an account?{" "}
+				<Link href="/register" underline="hover">
+					Register here
+				</Link>
+			</Typography>
+		</Container>
 	);
 };
 

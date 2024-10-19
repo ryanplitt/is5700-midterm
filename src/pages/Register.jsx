@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Container, Box, TextField, Button, Typography, Link } from "@mui/material";
 
 const Register = () => {
 	const [name, setName] = useState("");
@@ -19,81 +20,66 @@ const Register = () => {
 
 	const passwordsMatch = password === confirmPassword && password !== "";
 
-	const passwordClass =
-		passwordsTouched[0] && passwordsTouched[1]
-			? passwordsMatch
-				? "input is-success"
-				: "input is-danger"
-			: "input";
-
 	return (
-		<section className="section">
-			<div className="container">
-				<h1 className="title">Register</h1>
-				<div className="box">
-					<form onSubmit={handleSubmit}>
-						<div className="field">
-							<label className="label">Email</label>
-							<div className="control">
-								<input
-									className="input"
-									type="email"
-									placeholder="e.g. alex@example.com"
-									value={email}
-									onChange={(e) => {
-										setEmail(e.target.value);
-									}}
-									required
-								/>
-							</div>
-						</div>
+		<Container maxWidth="sm">
+			<Typography variant="h4" component="h1" gutterBottom>
+				Register
+			</Typography>
+			<Box component="form" onSubmit={handleSubmit} noValidate>
+				<TextField
+					label="Email"
+					type="email"
+					fullWidth
+					margin="normal"
+					variant="outlined"
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					required
+				/>
 
-						<div className="field">
-							<label className="label">Password</label>
-							<div className="control">
-								<input
-									className={passwordClass}
-									type="password"
-									placeholder="********"
-									value={password}
-									onChange={(e) => {
-										setPassword(e.target.value);
-										setPasswordsTouched((old) => [true, old[1]]);
-									}}
-									required
-								/>
-							</div>
-						</div>
+				<TextField
+					label="Password"
+					type="password"
+					fullWidth
+					margin="normal"
+					variant="outlined"
+					value={password}
+					onChange={(e) => {
+						setPassword(e.target.value);
+						setPasswordsTouched((old) => [true, old[1]]);
+					}}
+					error={passwordsTouched[0] && !passwordsMatch}
+					helperText={passwordsTouched[0] && !passwordsMatch ? "Passwords must match" : ""}
+					required
+				/>
 
-						<div className="field">
-							<label className="label">Confirm Password</label>
-							<div className="control">
-								<input
-									className={passwordClass}
-									type="password"
-									placeholder="********"
-									value={confirmPassword}
-									onChange={(e) => {
-										setConfirmPassword(e.target.value);
-										setPasswordsTouched((old) => [old[0], true]);
-									}}
-									required
-								/>
-							</div>
-						</div>
+				<TextField
+					label="Confirm Password"
+					type="password"
+					fullWidth
+					margin="normal"
+					variant="outlined"
+					value={confirmPassword}
+					onChange={(e) => {
+						setConfirmPassword(e.target.value);
+						setPasswordsTouched((old) => [old[0], true]);
+					}}
+					error={passwordsTouched[1] && !passwordsMatch}
+					helperText={passwordsTouched[1] && !passwordsMatch ? "Passwords must match" : ""}
+					required
+				/>
 
-						<div className="field">
-							<div className="control">
-								<button className="button is-primary">Register</button>
-							</div>
-						</div>
-					</form>
-				</div>
-				<p>
-					Already have an account? <a href="/login">Login here</a>.
-				</p>
-			</div>
-		</section>
+				<Button type="submit" variant="contained" color="primary" fullWidth>
+					Register
+				</Button>
+			</Box>
+			<Typography variant="body2" align="center" style={{ marginTop: "1rem" }}>
+				Already have an account?{" "}
+				<Link href="/login" underline="hover">
+					Login here
+				</Link>
+			</Typography>
+		</Container>
 	);
 };
 

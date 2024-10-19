@@ -6,8 +6,8 @@ const SidebarNav = ({ isAuthenticated, userRole, toggleSidebar }) => {
 		<aside className="menu">
 			<i className={`fas fa-image`}></i>
 			<i className={`fas fa-terminal`} style={{ marginLeft: "10px" }}></i>
-			<p className="menu-label">CanvaScript</p>
-			<button className="button is-white is-small" onClick={toggleSidebar}>
+			{/* <p className="menu-label">CanvaScript</p> */}
+			<button className="button" onClick={toggleSidebar}>
 				<span className="icon">
 					<i className="fas fa-bars"></i>
 				</span>
