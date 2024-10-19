@@ -65,11 +65,13 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 	justifyContent: "flex-end",
 }));
 
-const Layout = ({ isAuthenticated, userRole }) => {
+const Layout = () => {
 	const [open, setOpen] = useState(true);
 	const theme = useTheme();
 	const location = useLocation();
 	const auth = useAuth();
+	const isAuthenticated = auth.isAuthenticated;
+	const userRole = auth.user ? auth.user.role : "student";
 
 	const toggleSidebar = () => {
 		setOpen(!open);

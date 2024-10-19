@@ -2,8 +2,8 @@ import React, { createContext, useContext, useState } from "react";
 
 const FormContext = createContext();
 
-export const FormProvider = ({ children, onSubmit }) => {
-	const [form, setForm] = useState({});
+export const FormProvider = ({ children, onSubmit, initial = {} }) => {
+	const [form, setForm] = useState(initial);
 	const [error, setError] = useState(null);
 
 	const updateForm = (key, value) => {
@@ -11,7 +11,6 @@ export const FormProvider = ({ children, onSubmit }) => {
 	};
 
 	const handleSubmit = (e) => {
-		e.preventDefault();
 		onSubmit(form);
 	};
 
@@ -45,6 +44,7 @@ export const useNumberInput = (name) => {
 	const { form, updateForm } = useForm();
 	return {
 		value: form[name] || "",
+		name: name,
 		onChange: (e) => updateForm(name, parseFloat(e.target.value)),
 	};
 };

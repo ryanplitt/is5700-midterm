@@ -1,78 +1,46 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useMemo } from "react";
 import { Container, Box, TextField, Button, Typography, Link } from "@mui/material";
+import { useInput, useForm } from "../FormProvider";
+import TextInput from "../TextInput";
+import SubmitButton from "../SubmitButton";
 
 const Register = () => {
-	const [name, setName] = useState("");
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
-	const [confirmPassword, setConfirmPassword] = useState("");
-	const [passwordsTouched, setPasswordsTouched] = useState([false, false]);
-	const navigate = useNavigate();
+	const form = useForm().form;
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		// TODO: Implement registration logic here
-		console.log("Name:", name, "Email:", email, "Password:", password);
+	const passwordsMatch = useMemo(() => {
+		return (
+			form.password === form.confirmPassword && form.password !== "" && form.confirmPassword !== ""
+		);
+	}, [form.password, form.confirmPassword]);
 
-		navigate("/dashboard");
-	};
-
-	const passwordsMatch = password === confirmPassword && password !== "";
+	const allowRegister = useMemo(() => {
+		return form.email !== "" && passwordsMatch;
+	}, [form.email, passwordsMatch]);
 
 	return (
-		<Container maxWidth="sm">
+		<Container>
 			<Typography variant="h4" component="h1" gutterBottom>
 				Register
 			</Typography>
-			<Box component="form" onSubmit={handleSubmit} noValidate>
-				<TextField
-					label="Email"
-					type="email"
-					fullWidth
-					margin="normal"
-					variant="outlined"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-					required
-				/>
+			<TextInput type="email" label="Email" {...useInput("email")} />
+			<TextInput
+				name="password"
+				type="password"
+				label="Password"
+				error={!passwordsMatch}
+				helperText={!passwordsMatch ? "Passwords must match" : ""}
+			/>
 
-				<TextField
-					label="Password"
-					type="password"
-					fullWidth
-					margin="normal"
-					variant="outlined"
-					value={password}
-					onChange={(e) => {
-						setPassword(e.target.value);
-						setPasswordsTouched((old) => [true, old[1]]);
-					}}
-					error={passwordsTouched[0] && !passwordsMatch}
-					helperText={passwordsTouched[0] && !passwordsMatch ? "Passwords must match" : ""}
-					required
-				/>
+			<TextInput
+				name="confirmPassword"
+				type="password"
+				label="Confirm Password"
+				error={!passwordsMatch}
+				helperText={!passwordsMatch ? "Passwords must match" : ""}
+			/>
 
-				<TextField
-					label="Confirm Password"
-					type="password"
-					fullWidth
-					margin="normal"
-					variant="outlined"
-					value={confirmPassword}
-					onChange={(e) => {
-						setConfirmPassword(e.target.value);
-						setPasswordsTouched((old) => [old[0], true]);
-					}}
-					error={passwordsTouched[1] && !passwordsMatch}
-					helperText={passwordsTouched[1] && !passwordsMatch ? "Passwords must match" : ""}
-					required
-				/>
+			<SubmitButton name="Register" isValid={allowRegister} />
 
-				<Button type="submit" variant="contained" color="primary" fullWidth>
-					Register
-				</Button>
-			</Box>
 			<Typography variant="body2" align="center" style={{ marginTop: "1rem" }}>
 				Already have an account?{" "}
 				<Link href="/login" underline="hover">

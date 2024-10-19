@@ -17,13 +17,20 @@ import {
 import React from "react";
 import GenericPage from "./pages/GenericPage";
 import Profile from "./pages/Profile";
+import { useAuth } from "./useAuth0";
+import { FormProvider, useForm } from "./FormProvider";
+import { useNavigate } from "react-router-dom";
 
-const Router = ({ isAuthenticated, userRole }) => {
+const Router = () => {
+	const auth = useAuth();
+	const isAuthenticated = auth.isAuthenticated;
+	const userRole = auth.user ? auth.user.role : "student";
+
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/login" element={<Login />} />
-				<Route path="/register" element={<Register />} />
+				{loginRoute()}
+				{registerRoute()}
 
 				<Route element={<Layout isAuthenticated={isAuthenticated} userRole={userRole} />}>
 					<Route path="/" element={<Home />} />
@@ -49,6 +56,68 @@ const Router = ({ isAuthenticated, userRole }) => {
 				)}
 			</Routes>
 		</BrowserRouter>
+	);
+
+	function registerRoute() {
+		return (
+			<Route
+				path="/register"
+				element={
+					<FormProviderWrapper
+						auth={auth.user}
+						onSubmit={async (form) => {
+							try {
+								console.log("Registering user", form);
+								await auth.register(form.email, form.password);
+							} catch (error) {
+								console.error("Error registering user", error);
+							}
+						}}
+					>
+						<Register />
+					</FormProviderWrapper>
+				}
+			/>
+		);
+	}
+
+	function loginRoute() {
+		return (
+			<Route
+				path="/login"
+				element={
+					<FormProviderWrapper
+						auth={auth.user}
+						onSubmit={async (form) => {
+							try {
+								console.log("Logging in user", form);
+								await auth.login(form.email, form.password);
+							} catch (error) {
+								console.error("Error logging in user", error);
+							}
+						}}
+					>
+						<Login />
+					</FormProviderWrapper>
+				}
+			/>
+		);
+	}
+};
+
+const FormProviderWrapper = ({ user, onSubmit, children }) => {
+	const navigate = useNavigate();
+
+	return (
+		<FormProvider
+			onSubmit={async (form) => {
+				await onSubmit(form);
+				navigate("/");
+			}}
+			initial={{ ...user }}
+		>
+			{children}
+		</FormProvider>
 	);
 };
 

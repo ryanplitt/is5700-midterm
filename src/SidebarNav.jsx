@@ -1,7 +1,12 @@
 import React from "react";
 import SidebarLink from "./SidebarLink";
+import { useAuth } from "./useAuth0";
 
-const SidebarNav = ({ isAuthenticated, userRole, toggleSidebar }) => {
+const SidebarNav = ({ toggleSidebar }) => {
+	const auth = useAuth();
+	const isAuthenticated = auth.user;
+	const userRole = auth.user ? auth.user.role : "student"; // TODO: Do I need this here? Possibly?
+
 	return (
 		<aside className="menu">
 			<i className={`fas fa-image`}></i>

@@ -54,6 +54,19 @@ export const AuthProvider = ({ children }) => {
 		}
 	};
 
+	const updateUser = async (id, user) => {
+		console.log("Updating user:", user);
+		setIsLoading(true);
+		try {
+			await api.update(user.id, user);
+			setUser(user);
+		} catch (err) {
+			setError(err);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	const logout = () => {
 		setUser(null);
 		setIsAuthenticated(false);
@@ -61,7 +74,7 @@ export const AuthProvider = ({ children }) => {
 
 	return (
 		<AuthContext.Provider
-			value={{ user, isAuthenticated, isLoading, error, login, register, logout }}
+			value={{ user, isAuthenticated, isLoading, error, login, register, logout, updateUser }}
 		>
 			{children}
 		</AuthContext.Provider>

@@ -1,11 +1,14 @@
 import React from "react";
 import "./App.css";
 import Router from "./Router";
+import { AuthProvider } from "./useAuth0";
 
 function App() {
-	const isAuthenticated = true;
-	const userRole = "admin";
-	return <Router isAuthenticated={isAuthenticated} userRole={userRole} />;
+	return (
+		<AuthProvider>
+			<Router />
+		</AuthProvider>
+	);
 }
 
 export default App;

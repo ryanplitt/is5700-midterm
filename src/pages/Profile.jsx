@@ -21,17 +21,20 @@ const Profile = () => {
 	const auth = useAuth();
 
 	const handleSubmit = (form) => {
-		if (form.name && form.email && form.password && form.role) {
+		if (form.email && form.password && form.role) {
+			console.log("Submitting form", form);
 			if (auth.user) {
-				auth.updateUser(form);
+				auth.updateUser(auth.user.id, form);
 			}
 		}
 		console.log(form);
 	};
 
+	const currentUser = auth.user;
+
 	return (
-		<FormProvider onSubmit={handleSubmit}>
-			<Container maxWidth="sm">
+		<FormProvider onSubmit={handleSubmit} initial={{ ...currentUser }}>
+			<Container>
 				<Typography variant="h4" component="h1" gutterBottom>
 					Profile
 				</Typography>

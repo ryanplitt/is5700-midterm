@@ -7,8 +7,8 @@ const TextInput = ({ name, type = "text", ...props }) => {
 	return (
 		<Box mb={2}>
 			<TextField
-				label={name}
 				type={type}
+				label={name}
 				fullWidth
 				variant="outlined"
 				{...useInput(name)}
