@@ -6,12 +6,13 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-	const [user, setUser] = useState(null);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+	const [user, setUser] = useState({ email: "asdf", password: "asdf", role: "teacher", id: "1" });
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
 	const api = useMemo(() => useApi({ tableName: "users" }), []);
+
+	const isAuthenticated = useMemo(() => !!user, [user]);
 
 	const login = async (email, password) => {
 		setIsLoading(true);
@@ -24,9 +25,8 @@ export const AuthProvider = ({ children }) => {
 				throw new Error("Invalid password");
 			}
 			setUser(validUser);
-			setIsAuthenticated(true);
 		} catch (err) {
-			setIsAuthenticated(false);
+			setUser(null);
 			setError(err);
 		} finally {
 			setIsLoading(false);
@@ -45,9 +45,8 @@ export const AuthProvider = ({ children }) => {
 			const id = await api.create(newUser);
 			setUser({ ...newUser, id: id });
 			console.log("Making new user:", newUser, "with id:", id);
-			setIsAuthenticated(true);
 		} catch (err) {
-			setIsAuthenticated(false);
+			setUser(null);
 			setError(err);
 		} finally {
 			setIsLoading(false);
@@ -69,7 +68,6 @@ export const AuthProvider = ({ children }) => {
 
 	const logout = () => {
 		setUser(null);
-		setIsAuthenticated(false);
 	};
 
 	return (

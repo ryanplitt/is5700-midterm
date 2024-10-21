@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { styled } from "@mui/material/styles";
+import { duration, easing, styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
+import Container from "@mui/material/Container";
 import MuiAppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -20,47 +21,55 @@ import { useAuth } from "../useAuth0";
 
 const drawerWidth = 240;
 
-// Styled components for AppBar and Main
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-	({ theme, open }) => ({
-		flexGrow: 1,
-		padding: theme.spacing(3),
-		transition: theme.transitions.create("margin", {
-			easing: theme.transitions.easing.sharp,
-			duration: theme.transitions.duration.leavingScreen,
-		}),
-		marginLeft: `-${drawerWidth}px`,
-		...(open && {
-			marginLeft: 0,
-			transition: theme.transitions.create("margin", {
-				easing: theme.transitions.easing.easeOut,
-				duration: theme.transitions.duration.enteringScreen,
-			}),
-		}),
-	})
-);
+const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(({ theme }) => ({
+	flexGrow: 1,
+	padding: theme.spacing(3),
+	transition: theme.transitions.create("margin", {
+		easing: theme.transitions.easing.sharp,
+		duration: theme.transitions.duration.leavingScreen,
+	}),
+	marginLeft: `-${drawerWidth}px`,
+	variants: [
+		{
+			props: ({ open }) => open,
+			style: {
+				transition: theme.transitions.create("margin", {
+					easing: theme.transitions.easing.easeOut,
+					duration: theme.transitions.duration.enteringScreen,
+				}),
+				marginLeft: 0,
+			},
+		},
+	],
+}));
 
 const AppBar = styled(MuiAppBar, {
 	shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})(({ theme }) => ({
 	transition: theme.transitions.create(["margin", "width"], {
 		easing: theme.transitions.easing.sharp,
 		duration: theme.transitions.duration.leavingScreen,
 	}),
-	...(open && {
-		width: `calc(100% - ${drawerWidth}px)`,
-		marginLeft: `${drawerWidth}px`,
-		transition: theme.transitions.create(["margin", "width"], {
-			easing: theme.transitions.easing.easeOut,
-			duration: theme.transitions.duration.enteringScreen,
-		}),
-	}),
+	variants: [
+		{
+			props: ({ open }) => open,
+			style: {
+				width: `calc(100% - ${drawerWidth}px)`,
+				marginLeft: `${drawerWidth}px`,
+				transition: theme.transitions.create(["margin", "width"], {
+					easing: theme.transitions.easing.easeOut,
+					duration: theme.transitions.duration.enteringScreen,
+				}),
+			},
+		},
+	],
 }));
 
 const DrawerHeader = styled("div")(({ theme }) => ({
 	display: "flex",
 	alignItems: "center",
 	padding: theme.spacing(0, 1),
+	// necessary for content to be below app bar
 	...theme.mixins.toolbar,
 	justifyContent: "flex-end",
 }));
@@ -100,7 +109,6 @@ const Layout = () => {
 
 	return (
 		<Box sx={{ display: "flex" }}>
-			<CssBaseline />
 			<AppBar position="fixed" open={open}>
 				<Toolbar>
 					<IconButton
@@ -141,7 +149,6 @@ const Layout = () => {
 					flexShrink: 0,
 					"& .MuiDrawer-paper": {
 						width: drawerWidth,
-						boxSizing: "border-box",
 					},
 				}}
 				variant="persistent"
@@ -154,12 +161,16 @@ const Layout = () => {
 					</IconButton>
 				</DrawerHeader>
 				<Divider />
-				<SidebarNav isAuthenticated={isAuthenticated} userRole={userRole} />
+				<SidebarNav
+					isAuthenticated={isAuthenticated}
+					userRole={userRole}
+					toggleSidebar={toggleSidebar}
+				/>
 			</Drawer>
 
 			<Main open={open}>
 				<DrawerHeader />
-				<Outlet />
+				<Outlet sx={{ width: "100%" }} />
 			</Main>
 		</Box>
 	);

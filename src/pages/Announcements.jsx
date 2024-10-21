@@ -1,72 +1,90 @@
-import {
-	Container,
-	Box,
-	TextField,
-	Button,
-	List,
-	ListItem,
-	ListItemText,
-	Typography,
-	Divider,
-} from "@mui/material";
-import React from "react";
-import "@fortawesome/fontawesome-free/css/all.min.css";
+import { Container, Box, Button, List } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import AnnouncementListItem from "../components/AnnouncementListItem";
+import { useApi } from "../apiV3";
+import { EditingModal } from "../components/Modal";
+import dayjs from "dayjs";
 
 const Announcements = () => {
-	const announcements = [
-		{
-			title: "Welcome to the Course!",
-			description: "This is a sample announcement.",
-			postedOn: "Posted on 2021-10-01",
-		},
-		{
-			title: "Assignment 1 Deadline Extended",
-			description: "The deadline for Assignment 1 has been extended to 2021-10-15.",
-			postedOn: "Posted on 2021-10-05",
-		},
-		{
-			title: "Midterm Exam Date",
-			description: "The midterm exam will be held on 2021-10-20.",
-			postedOn: "Posted on 2021-10-10",
-		},
-	];
+	const [announcements, setAnnouncements] = useState([]);
+	const api = useApi("announcements");
+
+	useEffect(() => {
+		api.getAll().then((fetchedAnnouncements) => {
+			setAnnouncements(
+				fetchedAnnouncements.sort((a, b) => new Date(b.postedOn) - new Date(a.postedOn))
+			);
+		});
+	}, []);
+
+	const [newAnnouncementOpen, setNewAnnouncementOpen] = useState(false);
+
+	const handleCreateNew = () => {
+		setNewAnnouncementOpen(true);
+	};
+
+	const handleSaveNewAnnouncement = async (updatedFields) => {
+		const newAnnouncement = {
+			...updatedFields,
+			postedOn: dayjs(new Date()),
+		};
+		const newAnnouncementID = await api.create(newAnnouncement);
+		console.log("Saved new announcement with ID", newAnnouncementID);
+
+		setAnnouncements((prev) => [{ ...newAnnouncement, id: newAnnouncementID }, ...prev]);
+		setNewAnnouncementOpen(false);
+	};
+
+	const handleDeleteAnnouncement = async (id) => {
+		await api.delete(id);
+		setAnnouncements((prev) => prev.filter((a) => a.id !== id));
+	};
+
+	const handleCloseNewAnnouncement = () => {
+		setNewAnnouncementOpen(false);
+	};
 
 	return (
-		<Container>
-			<Box display="flex" justifyContent="space-between" alignItems="center" my={3}>
-				<Box sx={{ display: "flex", alignItems: "flex-end" }}>
-					<i className={`fas fa-magnifying-glass`}></i>
-					<TextField id="input-with-sx" placeholder="Search..." variant="standard" />
-					<Button variant="contained" color="primary">
-						Create New
-					</Button>
+		<Container sx={{ width: "100%" }}>
+			<>
+				<Box display="flex" justifyContent="space-between" my={3}>
+					<Box alignItems="left">
+						<Button variant="contained" color="primary" onClick={handleCreateNew}>
+							Create New
+						</Button>
+					</Box>
 				</Box>
-			</Box>
 
-			<List>
-				{announcements.map((announcement, index) => (
-					<div key={index}>
-						<ListItem>
-							<ListItemText
-								primary={
-									<Typography variant="h6" component="div">
-										{announcement.title}
-									</Typography>
-								}
-								secondary={
-									<>
-										<Typography variant="body2">{announcement.description}</Typography>
-										<Typography variant="caption" color="text.secondary">
-											{announcement.postedOn}
-										</Typography>
-									</>
-								}
-							/>
-						</ListItem>
-						{index < announcements.length - 1 && <Divider />}
-					</div>
-				))}
-			</List>
+				<List sx={{ width: "100%" }}>
+					{announcements.map((announcement, index) => (
+						<AnnouncementListItem
+							announcement={announcement}
+							index={index}
+							key={index}
+							onSave={(announcement) => {
+								setAnnouncements((prev) => {
+									const newAnnouncements = [...prev];
+									const index = newAnnouncements.findIndex((a) => a.id === announcement.id);
+									newAnnouncements[index] = announcement;
+									return newAnnouncements;
+								});
+							}}
+							onDelete={handleDeleteAnnouncement}
+						/>
+					))}
+				</List>
+
+				<EditingModal
+					open={newAnnouncementOpen}
+					onClose={handleCloseNewAnnouncement}
+					onSave={handleSaveNewAnnouncement}
+					title="Create New Announcement"
+					fields={[
+						{ label: "Title", value: "", type: "text", name: "title" },
+						{ label: "Description", value: "", type: "text", name: "description" },
+					]}
+				/>
+			</>
 		</Container>
 	);
 };

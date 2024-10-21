@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
 	return (
-		<Container maxWidth="sm">
+		<Container>
 			<Typography variant="h4" component="h1" gutterBottom>
 				Welcome to Our Application
 			</Typography>
-			<Typography variant="body1" paragraph>
+			<Typography variant="body1">
 				This is the public version of our homepage. Please login to access more features.
 			</Typography>
 			<Box>
