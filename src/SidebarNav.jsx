@@ -31,6 +31,7 @@ const SidebarNav = ({ toggleSidebar }) => {
 						<SidebarLink to="/people" icon="fa-users" label="People" />
 						<SidebarLink to="/search" icon="fa-search" label="Search" />
 						<SidebarLink to="/genericPage" icon="fa-cogs" label="Generic Page" />
+						<SidebarLink to="/calendar" icon="fa-calendar" label="Calendar" />
 					</>
 				) : (
 					<SidebarLink to="/" icon="fa-home" label="Home" />

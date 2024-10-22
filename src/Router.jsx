@@ -10,6 +10,7 @@ import GenericPage from "./pages/GenericPage";
 import Profile from "./pages/Profile";
 import Modules from "./pages/Modules";
 import Assignments from "./pages/Assignments";
+import Calendar from "./pages/Calendar";
 import { useAuth } from "./useAuth0";
 import { FormProvider } from "./FormProvider";
 import { useNavigate } from "react-router-dom";
@@ -45,6 +46,7 @@ const Router = () => {
 						<Route path="/search" element={<Search />} title="Search" />
 						<Route path="/genericPage" element={<GenericPage />} title="Generic Page" />
 						<Route path="/profile" element={<Profile />} title="Profile" />
+						<Route path="/calendar" element={<Calendar />} title="Calendar" />
 					</Route>
 				)}
 			</Routes>

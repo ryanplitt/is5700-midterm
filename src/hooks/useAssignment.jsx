@@ -34,6 +34,13 @@ const useAssignment = () => {
 	};
 
 	const updateAssignment = async (id, updatedFields) => {
+		console.log("Updating Assignment:", id, updatedFields);
+
+		if (!updatedFields) {
+			console.error("Updated fields are undefined or null");
+			return;
+		}
+
 		try {
 			await api.update(id, updatedFields);
 			setAssignments((prevAssignments) =>

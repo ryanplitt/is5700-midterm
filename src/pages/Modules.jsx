@@ -93,7 +93,6 @@ const Modules = () => {
 				</Accordion>
 			))}
 
-			{/* Modal for creating a new module */}
 			<EditingModal
 				open={newModuleOpen}
 				onClose={handleCloseNewModule}
@@ -102,7 +101,6 @@ const Modules = () => {
 				fields={[{ label: "Module Title", value: "", type: "text", name: "title" }]}
 			/>
 
-			{/* Modal for creating a new assignment */}
 			<EditingModal
 				open={newAssignmentOpen}
 				onClose={handleCloseNewAssignment}

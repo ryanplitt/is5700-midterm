@@ -29,7 +29,7 @@ const AssignmentListItem = ({ assignment, index, onSave, onDelete }) => {
 			...assignment,
 			...updatedFields,
 		};
-		onSave(newAssignment);
+		onSave(assignment.id, newAssignment);
 		handleCloseDetails();
 	};
 

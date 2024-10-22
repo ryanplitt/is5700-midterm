@@ -47,6 +47,10 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 
 	const [formValues, setFormValues] = useState(initializeFormValues(fields));
 
+	useEffect(() => {
+		setFormValues(initializeFormValues(fields));
+	}, [fields]);
+
 	const handleChange = (name, value) => {
 		setFormValues((prevValues) => ({
 			...prevValues,
