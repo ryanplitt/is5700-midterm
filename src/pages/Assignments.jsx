@@ -5,11 +5,13 @@ import { EditingModal } from "../components/Modal";
 import useAssignment from "../hooks/useAssignment";
 import useModules from "../hooks/useModules";
 import dayjs from "dayjs";
+import { useAuth } from "../useAuth0";
 
 const Assignments = () => {
 	const { assignments, createAssignment, updateAssignment, deleteAssignment } = useAssignment();
 	const { modules } = useModules();
 	const [newAssignmentOpen, setNewAssignmentOpen] = useState(false);
+	const isTeacher = useAuth().isTeacher;
 
 	const handleSaveNewAssignment = async (updatedFields) => {
 		const newAssignment = {
@@ -26,12 +28,13 @@ const Assignments = () => {
 
 	return (
 		<Container sx={{ width: "100%" }}>
-			<Box display="flex" justifyContent="space-between" my={3}>
-				<Button variant="contained" color="primary" onClick={() => setNewAssignmentOpen(true)}>
-					Create New Assignment
-				</Button>
-			</Box>
-
+			{isTeacher && (
+				<Box display="flex" justifyContent="space-between" my={3}>
+					<Button variant="contained" color="primary" onClick={() => setNewAssignmentOpen(true)}>
+						Create New Assignment
+					</Button>
+				</Box>
+			)}
 			<List sx={{ width: "100%" }}>
 				{assignments.map((assignment, index) => (
 					<AssignmentListItem
@@ -44,7 +47,6 @@ const Assignments = () => {
 					/>
 				))}
 			</List>
-
 			<EditingModal
 				open={newAssignmentOpen}
 				onClose={handleCloseNewAssignment}

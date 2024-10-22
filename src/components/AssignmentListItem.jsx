@@ -4,11 +4,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Modal, EditingModal } from "./Modal";
 import dayjs from "dayjs";
 import useModules from "../hooks/useModules";
+import { useAuth } from "../useAuth0";
 
 const AssignmentListItem = ({ assignment, index, onSave, onDelete }) => {
 	const [openDelete, setOpenDelete] = useState(false);
 	const [openDetails, setOpenDetails] = useState(false);
 	const { modules } = useModules();
+	const { isTeacher } = useAuth().isTeacher;
 
 	const handleDeleteClick = () => {
 		setOpenDelete(false);
@@ -40,16 +42,18 @@ const AssignmentListItem = ({ assignment, index, onSave, onDelete }) => {
 				onClick={() => setOpenDetails(true)}
 				component="div"
 				secondaryAction={
-					<Button
-						variant="outlined"
-						startIcon={<DeleteIcon />}
-						onClick={(e) => {
-							e.stopPropagation();
-							setOpenDelete(true);
-						}}
-					>
-						Delete
-					</Button>
+					isTeacher && (
+						<Button
+							variant="outlined"
+							startIcon={<DeleteIcon />}
+							onClick={(e) => {
+								e.stopPropagation();
+								setOpenDelete(true);
+							}}
+						>
+							Delete
+						</Button>
+					)
 				}
 			>
 				<ListItemText
@@ -93,7 +97,8 @@ const AssignmentListItem = ({ assignment, index, onSave, onDelete }) => {
 				open={openDetails}
 				onClose={handleCloseDetails}
 				onSave={handleSave}
-				title="Edit Assignment"
+				title={isTeacher ? "Edit Assignment" : "Assignment Details"}
+				readOnly={!isTeacher}
 				fields={[
 					{ label: "Title", name: "title", value: assignment.title, type: "text" },
 					{

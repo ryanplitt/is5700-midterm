@@ -4,11 +4,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { Modal, EditingModal } from "./Modal";
 import { useApi } from "../apiV3";
 import dayjs from "dayjs";
+import { useAuth } from "../useAuth0";
 
 const AnnouncementListItem = ({ announcement, index, onSave, onDelete }) => {
 	const [openDelete, setOpenDelete] = useState(false);
 	const [openDetails, setOpenDetails] = useState(false);
 	const api = useApi("announcements");
+	const isTeacher = useAuth().isTeacher;
 
 	const handleDeleteClick = () => {
 		console.log("Deleting announcement");
@@ -45,16 +47,18 @@ const AnnouncementListItem = ({ announcement, index, onSave, onDelete }) => {
 				onClick={() => setOpenDetails(true)}
 				component="div"
 				secondaryAction={
-					<Button
-						variant="outlined"
-						startIcon={<DeleteIcon />}
-						onClick={(e) => {
-							e.stopPropagation();
-							setOpenDelete(true);
-						}}
-					>
-						Delete
-					</Button>
+					isTeacher && (
+						<Button
+							variant="outlined"
+							startIcon={<DeleteIcon />}
+							onClick={(e) => {
+								e.stopPropagation();
+								setOpenDelete(true);
+							}}
+						>
+							Delete
+						</Button>
+					)
 				}
 			>
 				<ListItemText
@@ -105,7 +109,8 @@ const AnnouncementListItem = ({ announcement, index, onSave, onDelete }) => {
 				open={openDetails}
 				onClose={handleCloseDetails}
 				onSave={handleSave}
-				title="Edit Announcement"
+				title={isTeacher ? "Edit Announcement" : "Announcement Details"}
+				readOnly={!isTeacher}
 				fields={[
 					{ label: "Title", name: "title", value: announcement.title, type: "text" },
 					{

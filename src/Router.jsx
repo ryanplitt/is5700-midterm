@@ -34,7 +34,7 @@ const Router = () => {
 					<Route
 						element={<Layout isAuthenticated={isAuthenticated} userRole={userRole} title="Home" />}
 					>
-						<Route path="/home" element={<Home />} />
+						<Route path="/" element={<Home />} />
 						<Route path="/syllabus" element={<Syllabus />} title="Syllabus" />
 						<Route path="/announcements" element={<Announcements />} title="Announcements" />
 						<Route path="/zoom" element={<Zoom />} title="Zoom" />

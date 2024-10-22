@@ -90,7 +90,7 @@ const Layout = () => {
 	};
 
 	const routeTitles = {
-		"/home": "Home",
+		"/": "Home",
 		"/syllabus": "Syllabus",
 		"/announcements": "Announcements",
 		"/zoom": "Zoom",

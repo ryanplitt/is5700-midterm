@@ -4,10 +4,12 @@ import AnnouncementListItem from "../components/AnnouncementListItem";
 import { useApi } from "../apiV3";
 import { EditingModal } from "../components/Modal";
 import dayjs from "dayjs";
+import { useAuth } from "../useAuth0";
 
 const Announcements = () => {
 	const [announcements, setAnnouncements] = useState([]);
 	const api = useApi("announcements");
+	const isTeacher = useAuth().isTeacher;
 
 	useEffect(() => {
 		api.getAll().then((fetchedAnnouncements) => {
@@ -46,7 +48,7 @@ const Announcements = () => {
 
 	return (
 		<Container sx={{ width: "100%" }}>
-			<>
+			{isTeacher ? (
 				<Box display="flex" justifyContent="space-between" my={3}>
 					<Box alignItems="left">
 						<Button variant="contained" color="primary" onClick={handleCreateNew}>
@@ -54,26 +56,26 @@ const Announcements = () => {
 						</Button>
 					</Box>
 				</Box>
-
-				<List sx={{ width: "100%" }}>
-					{announcements.map((announcement, index) => (
-						<AnnouncementListItem
-							announcement={announcement}
-							index={index}
-							key={index}
-							onSave={(announcement) => {
-								setAnnouncements((prev) => {
-									const newAnnouncements = [...prev];
-									const index = newAnnouncements.findIndex((a) => a.id === announcement.id);
-									newAnnouncements[index] = announcement;
-									return newAnnouncements;
-								});
-							}}
-							onDelete={handleDeleteAnnouncement}
-						/>
-					))}
-				</List>
-
+			) : null}
+			<List sx={{ width: "100%" }}>
+				{announcements.map((announcement, index) => (
+					<AnnouncementListItem
+						announcement={announcement}
+						index={index}
+						key={index}
+						onSave={(announcement) => {
+							setAnnouncements((prev) => {
+								const newAnnouncements = [...prev];
+								const index = newAnnouncements.findIndex((a) => a.id === announcement.id);
+								newAnnouncements[index] = announcement;
+								return newAnnouncements;
+							});
+						}}
+						onDelete={handleDeleteAnnouncement}
+					/>
+				))}
+			</List>
+			{isTeacher && (
 				<EditingModal
 					open={newAnnouncementOpen}
 					onClose={handleCloseNewAnnouncement}
@@ -84,7 +86,7 @@ const Announcements = () => {
 						{ label: "Description", value: "", type: "text", name: "description" },
 					]}
 				/>
-			</>
+			)}
 		</Container>
 	);
 };

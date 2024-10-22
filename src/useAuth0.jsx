@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-	const [user, setUser] = useState({ email: "asdf", password: "asdf", role: "teacher", id: "1" });
+	const [user, setUser] = useState(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState(null);
 
@@ -57,8 +57,9 @@ export const AuthProvider = ({ children }) => {
 		console.log("Updating user:", user);
 		setIsLoading(true);
 		try {
-			await api.update(user.id, user);
+			await api.update(id, user);
 			setUser(user);
+			console.log("Updated user:", user);
 		} catch (err) {
 			setError(err);
 		} finally {
@@ -70,9 +71,21 @@ export const AuthProvider = ({ children }) => {
 		setUser(null);
 	};
 
+	const isTeacher = useMemo(() => user?.role === "teacher", [user]);
+
 	return (
 		<AuthContext.Provider
-			value={{ user, isAuthenticated, isLoading, error, login, register, logout, updateUser }}
+			value={{
+				user,
+				isAuthenticated,
+				isLoading,
+				error,
+				login,
+				register,
+				logout,
+				updateUser,
+				isTeacher,
+			}}
 		>
 			{children}
 		</AuthContext.Provider>

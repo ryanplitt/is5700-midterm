@@ -5,7 +5,6 @@ import { useAuth } from "./useAuth0";
 const SidebarNav = ({ toggleSidebar }) => {
 	const auth = useAuth();
 	const isAuthenticated = auth.user;
-	const userRole = auth.user ? auth.user.role : "student"; // TODO: Do I need this here? Possibly?
 
 	return (
 		<aside className="menu">
@@ -20,7 +19,7 @@ const SidebarNav = ({ toggleSidebar }) => {
 			<ul className="menu-list">
 				{isAuthenticated ? (
 					<>
-						<SidebarLink to="/home" icon="fa-home" label="Home" />
+						<SidebarLink to="/" icon="fa-home" label="Home" />
 						<SidebarLink to="/syllabus" icon="fa-file-alt" label="Syllabus" />
 						<SidebarLink to="/announcements" icon="fa-bullhorn" label="Announcements" />{" "}
 						<SidebarLink to="/zoom" icon="fa-video" label="Zoom" />

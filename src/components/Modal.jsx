@@ -3,7 +3,6 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -11,7 +10,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import { MenuItem } from "@mui/material";
+import { DialogContentText, MenuItem } from "@mui/material";
 
 const Modal = ({ open, onClose, title, description, actions }) => {
 	return (
@@ -35,7 +34,6 @@ const Modal = ({ open, onClose, title, description, actions }) => {
 		</Dialog>
 	);
 };
-
 const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }) => {
 	const initializeFormValues = (fields) => {
 		const initialValues = {};
@@ -86,7 +84,12 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 									fullWidth
 									value={formValues[field.name] || ""}
 									onChange={(e) => handleChange(field.name, e.target.value)}
-									disabled={readOnly}
+									slotProps={{
+										input: {
+											readOnly: readOnly,
+											style: readOnly ? { color: "rgba(0, 0, 0, 0.87)" } : {},
+										},
+									}}
 								/>
 							);
 						} else if (field.type === "date") {
@@ -100,9 +103,12 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 										textField: {
 											margin: "dense",
 											fullWidth: true,
+											inputProps: {
+												readOnly: readOnly,
+												style: readOnly ? { color: "rgba(0, 0, 0, 0.87)" } : {},
+											},
 										},
 									}}
-									disabled={readOnly}
 								/>
 							);
 						} else if (field.type === "select" && field.options) {
@@ -116,7 +122,12 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 									value={formValues[field.name] || ""}
 									onChange={(e) => handleChange(field.name, e.target.value)}
 									fullWidth
-									disabled={readOnly}
+									slotProps={{
+										input: {
+											readOnly: readOnly,
+											style: readOnly ? { color: "rgba(0, 0, 0, 0.87)" } : {},
+										},
+									}}
 								>
 									{field.options.map((option, idx) => (
 										<MenuItem key={idx} value={option.value}>
@@ -139,5 +150,4 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 		</LocalizationProvider>
 	);
 };
-
 export { Modal, EditingModal };

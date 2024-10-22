@@ -15,6 +15,7 @@ import { EditingModal } from "../components/Modal";
 import useAssignment from "../hooks/useAssignment";
 import useModules from "../hooks/useModules";
 import dayjs from "dayjs";
+import { useAuth } from "../useAuth0";
 
 const Modules = () => {
 	const { assignments, createAssignment, updateAssignment, deleteAssignment } = useAssignment();
@@ -23,6 +24,8 @@ const Modules = () => {
 	const [newModuleOpen, setNewModuleOpen] = useState(false);
 	const [newAssignmentOpen, setNewAssignmentOpen] = useState(false);
 	const [selectedModule, setSelectedModule] = useState(null);
+
+	const { isTeacher } = useAuth();
 
 	const getAssignmentsForModule = (moduleId) => {
 		return assignments.filter((assignment) => assignment.moduleId === moduleId);
@@ -54,11 +57,13 @@ const Modules = () => {
 
 	return (
 		<Container>
-			<Box display="flex" justifyContent="space-between" my={3}>
-				<Button variant="contained" color="primary" onClick={() => setNewModuleOpen(true)}>
-					Create New Module
-				</Button>
-			</Box>
+			{isTeacher && (
+				<Box display="flex" justifyContent="space-between" my={3}>
+					<Button variant="contained" color="primary" onClick={() => setNewModuleOpen(true)}>
+						Create New Module
+					</Button>
+				</Box>
+			)}
 
 			{modules.map((module, index) => (
 				<Accordion key={index}>
@@ -68,16 +73,18 @@ const Modules = () => {
 						</Typography>
 					</AccordionSummary>
 					<AccordionDetails>
-						<Button
-							variant="contained"
-							color="primary"
-							onClick={() => {
-								setSelectedModule(module);
-								setNewAssignmentOpen(true);
-							}}
-						>
-							Add Assignment
-						</Button>
+						{isTeacher && (
+							<Button
+								variant="contained"
+								color="primary"
+								onClick={() => {
+									setSelectedModule(module);
+									setNewAssignmentOpen(true);
+								}}
+							>
+								Add Assignment
+							</Button>
+						)}
 						<List>
 							{getAssignmentsForModule(module.id).map((assignment, idx) => (
 								<AssignmentListItem
