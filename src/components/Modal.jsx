@@ -11,6 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
+import { MenuItem } from "@mui/material";
 
 const Modal = ({ open, onClose, title, description, actions }) => {
 	return (
@@ -36,15 +37,15 @@ const Modal = ({ open, onClose, title, description, actions }) => {
 };
 
 const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }) => {
-	function createInitialState() {
+	const initializeFormValues = (fields) => {
 		const initialValues = {};
 		fields.forEach((field) => {
 			initialValues[field.name] = field.value || "";
 		});
 		return initialValues;
-	}
+	};
 
-	const [formValues, setFormValues] = useState(createInitialState);
+	const [formValues, setFormValues] = useState(initializeFormValues(fields));
 
 	const handleChange = (name, value) => {
 		setFormValues((prevValues) => ({
@@ -61,50 +62,68 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 	};
 
 	const handleSave = () => {
-		console.log(formValues);
 		onSave(formValues);
 	};
 
 	return (
 		<LocalizationProvider dateAdapter={AdapterDayjs}>
-			<Dialog open={open} onClose={onClose} aria-labelledby="editing-dialog-title">
-				<DialogTitle id="editing-dialog-title">{title}</DialogTitle>
+			<Dialog open={open} onClose={onClose}>
+				<DialogTitle>{title}</DialogTitle>
 				<DialogContent>
-					{fields &&
-						fields.map((field, index) => {
-							if (field.type === "text") {
-								return (
-									<TextField
-										key={index}
-										margin="dense"
-										label={field.label}
-										name={field.name}
-										type="text"
-										fullWidth
-										value={formValues[field.name]}
-										onChange={(event) => handleChange(field.name, event.target.value)}
-										disabled={readOnly}
-									/>
-								);
-							} else if (field.type === "date") {
-								return (
-									<DatePicker
-										key={index}
-										label={field.label}
-										value={formValues[field.name] ? dayjs(formValues[field.name]) : null}
-										onChange={(newValue) => handleDateChange(field.name, newValue)}
-										slotProps={{
-											textField: {
-												margin: "dense",
-												fullWidth: true,
-											},
-										}}
-										disabled={readOnly}
-									/>
-								);
-							}
-							return null;
-						})}
+					{fields.map((field, index) => {
+						if (field.type === "text" || field.type === "number") {
+							return (
+								<TextField
+									key={index}
+									margin="dense"
+									label={field.label}
+									name={field.name}
+									type={field.type}
+									fullWidth
+									value={formValues[field.name] || ""}
+									onChange={(e) => handleChange(field.name, e.target.value)}
+									disabled={readOnly}
+								/>
+							);
+						} else if (field.type === "date") {
+							return (
+								<DatePicker
+									key={index}
+									label={field.label}
+									value={dayjs(formValues[field.name])}
+									onChange={(newValue) => handleDateChange(field.name, newValue)}
+									slotProps={{
+										textField: {
+											margin: "dense",
+											fullWidth: true,
+										},
+									}}
+									disabled={readOnly}
+								/>
+							);
+						} else if (field.type === "select" && field.options) {
+							return (
+								<TextField
+									select
+									key={index}
+									margin="dense"
+									label={field.label}
+									name={field.name}
+									value={formValues[field.name] || ""}
+									onChange={(e) => handleChange(field.name, e.target.value)}
+									fullWidth
+									disabled={readOnly}
+								>
+									{field.options.map((option, idx) => (
+										<MenuItem key={idx} value={option.value}>
+											{option.label}
+										</MenuItem>
+									))}
+								</TextField>
+							);
+						}
+						return null;
+					})}
 				</DialogContent>
 				{!readOnly && (
 					<DialogActions>

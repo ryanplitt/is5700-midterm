@@ -4,21 +4,14 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Announcements from "./pages/Announcements";
-import {
-	Syllabus,
-	Zoom,
-	Modules,
-	Assignments,
-	Discussions,
-	People,
-	Grades,
-	Search,
-} from "./pages/BlankPages";
+import { Syllabus, Zoom, Discussions, People, Grades, Search } from "./pages/BlankPages";
 import React from "react";
 import GenericPage from "./pages/GenericPage";
 import Profile from "./pages/Profile";
+import Modules from "./pages/Modules";
+import Assignments from "./pages/Assignments";
 import { useAuth } from "./useAuth0";
-import { FormProvider, useForm } from "./FormProvider";
+import { FormProvider } from "./FormProvider";
 import { useNavigate } from "react-router-dom";
 
 const Router = () => {
