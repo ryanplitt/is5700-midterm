@@ -98,7 +98,6 @@ const AssignmentListItem = ({ assignment, index, onSave, onDelete }) => {
 				onClose={handleCloseDetails}
 				onSave={handleSave}
 				title={isTeacher ? "Edit Assignment" : "Assignment Details"}
-				readOnly={!isTeacher}
 				fields={[
 					{ label: "Title", name: "title", value: assignment.title, type: "text" },
 					{

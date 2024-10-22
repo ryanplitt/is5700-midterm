@@ -110,7 +110,6 @@ const AnnouncementListItem = ({ announcement, index, onSave, onDelete }) => {
 				onClose={handleCloseDetails}
 				onSave={handleSave}
 				title={isTeacher ? "Edit Announcement" : "Announcement Details"}
-				readOnly={!isTeacher}
 				fields={[
 					{ label: "Title", name: "title", value: announcement.title, type: "text" },
 					{

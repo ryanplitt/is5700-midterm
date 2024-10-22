@@ -3,6 +3,7 @@ import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -10,7 +11,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
 import { useState, useEffect } from "react";
-import { DialogContentText, MenuItem } from "@mui/material";
+import { GlobalStyles, MenuItem } from "@mui/material";
+import { useAuth } from "../useAuth0";
 
 const Modal = ({ open, onClose, title, description, actions }) => {
 	return (
@@ -34,7 +36,8 @@ const Modal = ({ open, onClose, title, description, actions }) => {
 		</Dialog>
 	);
 };
-const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }) => {
+
+const EditingModal = ({ open, onClose, onSave, title, fields }) => {
 	const initializeFormValues = (fields) => {
 		const initialValues = {};
 		fields.forEach((field) => {
@@ -42,6 +45,7 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 		});
 		return initialValues;
 	};
+	const isTeacher = useAuth().isTeacher;
 
 	const [formValues, setFormValues] = useState(initializeFormValues(fields));
 
@@ -84,10 +88,14 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 									fullWidth
 									value={formValues[field.name] || ""}
 									onChange={(e) => handleChange(field.name, e.target.value)}
-									slotProps={{
-										input: {
-											readOnly: readOnly,
-											style: readOnly ? { color: "rgba(0, 0, 0, 0.87)" } : {},
+									disabled={!isTeacher}
+									// Add style override for disabled text color
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											color: "black",
+										},
+										"& .MuiInputLabel-root.Mui-disabled": {
+											color: "black",
 										},
 									}}
 								/>
@@ -103,12 +111,17 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 										textField: {
 											margin: "dense",
 											fullWidth: true,
-											inputProps: {
-												readOnly: readOnly,
-												style: readOnly ? { color: "rgba(0, 0, 0, 0.87)" } : {},
+											sx: {
+												"& .MuiInputBase-input.Mui-disabled": {
+													color: "black",
+												},
+												"& .MuiInputLabel-root.Mui-disabled": {
+													color: "black",
+												},
 											},
 										},
 									}}
+									disabled={!isTeacher}
 								/>
 							);
 						} else if (field.type === "select" && field.options) {
@@ -122,10 +135,14 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 									value={formValues[field.name] || ""}
 									onChange={(e) => handleChange(field.name, e.target.value)}
 									fullWidth
-									slotProps={{
-										input: {
-											readOnly: readOnly,
-											style: readOnly ? { color: "rgba(0, 0, 0, 0.87)" } : {},
+									disabled={!isTeacher}
+									// Add style override for disabled text color
+									sx={{
+										"& .MuiInputBase-input.Mui-disabled": {
+											color: "black",
+										},
+										"& .MuiInputLabel-root.Mui-disabled": {
+											color: "black",
 										},
 									}}
 								>
@@ -140,7 +157,7 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 						return null;
 					})}
 				</DialogContent>
-				{!readOnly && (
+				{isTeacher && (
 					<DialogActions>
 						<Button onClick={onClose}>Cancel</Button>
 						<Button onClick={handleSave}>Save</Button>
@@ -150,4 +167,5 @@ const EditingModal = ({ open, onClose, onSave, title, fields, readOnly = false }
 		</LocalizationProvider>
 	);
 };
+
 export { Modal, EditingModal };
